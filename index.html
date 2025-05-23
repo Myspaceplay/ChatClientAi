@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat Myspace :)</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #e9f1f7;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background-color: #0d6efd;
+      color: white;
+      padding: 15px 20px;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    #chat-container {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      margin: 10px 0;
+      padding: 12px 18px;
+      border-radius: 18px;
+      max-width: 75%;
+      font-size: 16px;
+      line-height: 1.5;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      word-wrap: break-word;
+    }
+
+    .user {
+      background-color: #cfe2ff;
+      color: #084298;
+      align-self: flex-end;
+    }
+
+    .bot {
+      background-color: #e2e3e5;
+      color: #333;
+      align-self: flex-start;
+    }
+
+    #input-area {
+      display: flex;
+      padding: 15px;
+      background: #f1f3f5;
+      border-top: 1px solid #ccc;
+    }
+
+    #user-input {
+      flex: 1;
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    #send-button {
+      margin-left: 10px;
+      padding: 10px 20px;
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    #send-button:hover {
+      background-color: #0b5ed7;
+    }
+
+    #model-select-container {
+      padding: 10px 20px;
+      background: #f1f3f5;
+      border-bottom: 1px solid #ccc;
+    }
+
+    #model-select {
+      padding: 5px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>Chat Myspace :)</header>
+
+  <div id="model-select-container">
+    <label for="model-select">Modelo:</label>
+    <select id="model-select">
+      <option value="deepseek">DeepSeek</option>
+      <option value="mistral">Mistral</option>
+    </select>
+  </div>
+
+  <div id="chat-container"></div>
+
+  <div id="input-area">
+    <input type="text" id="user-input" placeholder="Escribe tu mensaje..." autocomplete="off" />
+    <button id="send-button">Enviar</button>
+  </div>
+
+  <script>
+    const chatContainer = document.getElementById("chat-container");
+    const userInput = document.getElementById("user-input");
+    const sendButton = document.getElementById("send-button");
+    const modelSelect = document.getElementById("model-select");
+
+    function addMessage(text, sender) {
+      const messageElem = document.createElement("div");
+      messageElem.classList.add("message", sender);
+      messageElem.textContent = text;
+      chatContainer.appendChild(messageElem);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      addMessage(message, "user");
+      userInput.value = " ";
+
+      const model = modelSelect.value;
+
+      try {
+        const response = await fetch("http://127.0.0.1:8000/ai-chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message, model }),
+        });
+
+        if (!response.ok) throw new Error("Error en el servidor");
+
+        const data = await response.json();
+        addMessage(data.response || "Sin respuesta", "bot");
+      } catch (error) {
+        addMessage("⚠️ No se pudo conectar con el servidor", "bot");
+        console.error(error);
+      }
+    }
+
+    sendButton.addEventListener("click", sendMessage);
+    userInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>
