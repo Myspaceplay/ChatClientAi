@@ -3,34 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chat Myspace :)</title>
+  <header id="matrix-header"></header>
+  
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #e9f1f7;
       margin: 0;
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      background-color: #f5f8fc;
       display: flex;
       flex-direction: column;
       height: 100vh;
     }
 
-    header {
-      background-color: #0d6efd;
-      color: white;
-      padding: 15px 20px;
-      font-size: 24px;
-      font-weight: bold;
-      text-align: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
+    #matrix-header {
+     background: url('https://i.pinimg.com/originals/8d/fb/70/8dfb7036cdf29e13b850615e639e24d8.gif') center center / cover no-repeat;
+     color: #01120b;
+     text-shadow: 0 0 5px #ffffff, 0 0 30px #ffffff;
+     padding: 40px;
+     font-size: 2em;
+     text-align: center;
+     font-weight: bold;
+     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.79);
+     position: relative; 
+    }
+
+    #model-select-container {
+      padding: 10px 20px;
+      background-color: #00bd2c;
+      border-bottom: 1px solid #fffcfc;
+    }
+
+    #model-select {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
     }
 
     #chat-container {
       flex: 1;
       padding: 20px;
       overflow-y: auto;
-      background-color: #ffffff;
       display: flex;
       flex-direction: column;
+      background-color: #ffffff;
     }
 
     .message {
@@ -38,73 +59,71 @@
       padding: 12px 18px;
       border-radius: 18px;
       max-width: 75%;
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1.5;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       word-wrap: break-word;
+      transition: all 0.2s ease-in-out;
     }
 
     .user {
-      background-color: #cfe2ff;
-      color: #084298;
+      background-color: #cde0fc;
+      color: #00356b;
       align-self: flex-end;
+      border-bottom-right-radius: 4px;
     }
 
     .bot {
-      background-color: #e2e3e5;
-      color: #333;
+      background-color: #e4e6eb;
+      color: #111;
       align-self: flex-start;
+      border-bottom-left-radius: 4px;
     }
 
     #input-area {
       display: flex;
       padding: 15px;
-      background: #f1f3f5;
+      background: #010f02;
       border-top: 1px solid #ccc;
     }
 
     #user-input {
       flex: 1;
-      padding: 10px 15px;
+      padding: 12px 16px;
       border: 1px solid #ccc;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    #user-input:focus {
+      border-color: #00020a;
     }
 
     #send-button {
       margin-left: 10px;
-      padding: 10px 20px;
-      background-color: #0d6efd;
+      padding: 12px 18px;
+      background-color: #38b31f;
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 16px;
       cursor: pointer;
       transition: background-color 0.2s ease;
     }
 
     #send-button:hover {
-      background-color: #0b5ed7;
-    }
-
-    #model-select-container {
-      padding: 10px 20px;
-      background: #f1f3f5;
-      border-bottom: 1px solid #ccc;
-    }
-
-    #model-select {
-      padding: 5px;
-      font-size: 14px;
+      background-color: #00f919;
     }
   </style>
 </head>
 <body>
 
-  <header>Chat Myspace :)</header>
+  
 
   <div id="model-select-container">
-    <label for="model-select">Modelo:</label>
+    <label for="model-select"><strong>Modelo:</strong></label>
     <select id="model-select">
       <option value="deepseek">DeepSeek</option>
       <option value="mistral">Mistral</option>
@@ -137,7 +156,7 @@
       if (!message) return;
 
       addMessage(message, "user");
-      userInput.value = " ";
+      userInput.value = "";
 
       const model = modelSelect.value;
 
